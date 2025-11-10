@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <ctype.h>
+#include "methodResolver.h"
 
 int main(void) {
     struct sockaddr_in server_addr;
@@ -47,14 +48,10 @@ int main(void) {
         }
         printf("Request accepted!\n");
 
-        char method[10] = "";
-        for (int i = 0; i < strlen(buffer); i++) {
-            if (isspace(buffer[i])) {
-                break;
-            }
-            method[i] = buffer[i];
-        }
-        printf("HTTP Method is: %s\n", method);
+        char *method2 = resolveMethod(buffer);
+        printf("HTTP Method is: %s\n", method2);
+        free(method2);
+
         read(client, buffer, sizeof(buffer) - 1);
         write(client, response, strlen(response));
         close(client);
