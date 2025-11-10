@@ -5,11 +5,12 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <ctype.h>
 
 int main(void) {
     struct sockaddr_in server_addr;
     char buffer[1024];
-    const char *response =
+    char *response =
             "HTTP/0.9 200 OK\n"
             "Content-Type: text/plain\n"
             "Content-Length: 13\n"
@@ -46,6 +47,14 @@ int main(void) {
         }
         printf("Request accepted!\n");
 
+        char method[10] = "";
+        for (int i = 0; i < strlen(buffer); i++) {
+            if (isspace(buffer[i])) {
+                break;
+            }
+            method[i] = buffer[i];
+        }
+        printf("HTTP Method is: %s\n", method);
         read(client, buffer, sizeof(buffer) - 1);
         write(client, response, strlen(response));
         close(client);
