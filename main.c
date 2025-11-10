@@ -44,10 +44,12 @@ int main(void) {
             perror("accept failed");
             continue;
         }
+        printf("Request accepted!\n");
 
         read(client, buffer, sizeof(buffer) - 1);
         write(client, response, strlen(response));
         close(client);
+        printf("Response sent!\n");
     }
 
     close(server);
