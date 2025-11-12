@@ -6,18 +6,22 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <time.h>
 #include "methodResolver.h"
 
 int main(void) {
     struct sockaddr_in server_addr;
     char buffer[1024];
-    char *response =
+    srand(time(NULL));
+
+    char *template =
             "HTTP/1.1 200 OK\n"
             "Content-Type: text/html\n"
             "\n"
             "<html>"
-            "<h1>Hello, World!</h1>"
+            "<h1>Hello, World! %d</h1>"
             "</html>";
+
 
     int server = socket(AF_INET, SOCK_STREAM, 0);
     if (server < 0) {
@@ -43,6 +47,11 @@ int main(void) {
 
     while (true) {
         const int client = accept(server, NULL, NULL);
+
+        int random = rand();
+        char response[2048];
+        snprintf(response, sizeof(response), template, random);
+
         if (client < 0) {
             perror("accept failed");
             continue;
