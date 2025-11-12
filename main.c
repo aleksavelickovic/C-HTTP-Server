@@ -12,11 +12,12 @@ int main(void) {
     struct sockaddr_in server_addr;
     char buffer[1024];
     char *response =
-            "HTTP/0.9 200 OK\n"
-            "Content-Type: text/plain\n"
-            "Content-Length: 13\n"
+            "HTTP/1.1 200 OK\n"
+            "Content-Type: text/html\n"
             "\n"
-            "Hello, world!";
+            "<html>"
+            "<h1>Hello, World!</h1>"
+            "</html>";
 
     int server = socket(AF_INET, SOCK_STREAM, 0);
     if (server < 0) {
