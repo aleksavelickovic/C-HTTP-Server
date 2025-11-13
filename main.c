@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <time.h>
+#include <stdlib.h> // For realpath()
+#include <limits.h> // For PATH_MAX
 #include "HTTP_Resolver.h"
 
 int main(void) {
@@ -58,16 +60,17 @@ int main(void) {
         }
         printf("Request accepted!\n");
 
-
-        FILE *file = fopen("temp/request.txt", "w");
-        // fprintf(file, buffer);
-        // fclose(file);
-
         read(client, buffer, sizeof(buffer) - 1);
 
         char *method2 = resolveMethod(buffer);
         printf("HTTP Method is: %s\n", method2);
         free(method2);
+        char absolute_path[PATH_MAX];
+        realpath("../temp/request.txt", absolute_path);
+
+        FILE *file = fopen(absolute_path, "w+");
+        fprintf(file, "%s", buffer);
+        fclose(file);
 
         write(client, response, strlen(response));
         close(client);
