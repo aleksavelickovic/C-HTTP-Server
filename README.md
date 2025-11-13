@@ -7,7 +7,7 @@ A tiny single\-threaded HTTP server written in C. It listens on port `8081` to i
 ## Requirements
 
 \- A C compiler (e .g., `gcc`)  
-\- Linux environment (needed for sockets API)
+\- Linux environment (needed for sockets API and resolving absolute paths using realpath() )
 
 ## HTTP Standards Supported
 
