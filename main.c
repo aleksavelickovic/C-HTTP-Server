@@ -7,7 +7,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <time.h>
-#include "methodResolver.h"
+#include "HTTP_Resolver.h"
 
 int main(void) {
     struct sockaddr_in server_addr;
@@ -58,11 +58,17 @@ int main(void) {
         }
         printf("Request accepted!\n");
 
+
+        FILE *file = fopen("temp/request.txt", "w");
+        // fprintf(file, buffer);
+        // fclose(file);
+
+        read(client, buffer, sizeof(buffer) - 1);
+
         char *method2 = resolveMethod(buffer);
         printf("HTTP Method is: %s\n", method2);
         free(method2);
 
-        read(client, buffer, sizeof(buffer) - 1);
         write(client, response, strlen(response));
         close(client);
         printf("Response sent!\n");

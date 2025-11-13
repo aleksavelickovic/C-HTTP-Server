@@ -5,6 +5,8 @@
 #ifndef HTTP_SERVER_METHODRESOLVER_H
 #define HTTP_SERVER_METHODRESOLVER_H
 
-char* resolveMethod(const char *request);
+char *resolveMethod(const char *request);
+
+char *resolvePath(const char *request);
 
 #endif //HTTP_SERVER_METHODRESOLVER_H

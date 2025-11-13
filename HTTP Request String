@@ -1,0 +1,17 @@
+GET /favicon.ico HTTP/1.1
+Host: localhost:8081
+Connection: keep-alive
+sec-ch-ua-platform: "Linux"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36
+sec-ch-ua: "Chromium";v="142", "Google Chrome";v="142", "Not_A Brand";v="99"
+sec-ch-ua-mobile: ?0
+Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
+Sec-Fetch-Site: same-origin
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Dest: image
+Referer: http://localhost:8081/resources/html/index.html
+Accept-Encoding: gzip, deflate, br, zstd
+Accept-Language: sr-RS,sr;q=0.9,en-US;q=0.8,en;q=0.7
+Cookie: Idea-fcc2d5da=275ed6a8-0a4d-4f32-8725-f35fee6cad87; karteukorpi=; Webstorm-66249ca1=ada2bb80-d473-4a72-b2d2-78c9f2c2b5c6; grafana_session=fc449055c2171bb1b724fcc85bc1a29d; grafana_session_expiry=1761358007; Clion-2c248fdd=394b277c-769f-4b41-be37-ee263cb8c52c
+
+expiry=1761358007; Clion-2c248fdd=394b277c-769f-4b41-be37-ee263cb8c52c
