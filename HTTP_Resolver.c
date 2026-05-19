@@ -22,7 +22,25 @@ char *resolveMethod(const char *request) {
 }
 
 char *resolvePath(const char *request) {
-    char *path = malloc(sizeof(request) + 1);
-    path[sizeof(request) - 1] = '\0';
-    return NULL;
+    size_t len = strlen(request);
+    char *path = malloc(len + 1);
+    memcpy(path, request, len);
+    path[len] = '\0';
+    char URI[5000000] = " ";
+    int counter = 0;
+    int index = 0;
+    for (int i = 0; i < strlen(request); i++) {
+        if (counter > 2) {
+            break;
+        }
+        if (isspace(request[i])) {
+            counter++;
+            continue;
+        }
+        if (counter == 1) {
+            URI[index] = request[i];
+            index++;
+        }
+    }
+    return URI;
 }

@@ -15,9 +15,13 @@
 jmp_buf jmp_buffer;
 char *html = NULL;
 
-void resolve() {
+void resolve(const char *path) {
     char html_absolute_path[PATH_MAX];
-    realpath("../resources/html/sample_2.html", html_absolute_path);
+    char dest[500] = "../";
+    const char *src = path;
+    strcat(dest, src);
+    printf("PATH is: %s", dest);
+    realpath(dest, html_absolute_path);
 
     FILE *fptr = fopen(html_absolute_path, "rb");
     if (fptr == NULL) {
@@ -41,13 +45,6 @@ void resolve() {
 int main(void) {
     struct sockaddr_in server_addr;
     char buffer[1024];
-
-
-    if (setjmp(jmp_buffer) == 0) {
-        resolve();
-    } else {
-        html = "<h1> 404 Not Found! </h1>";
-    }
 
 
     int server = socket(AF_INET, SOCK_STREAM, 0);
@@ -75,6 +72,21 @@ int main(void) {
     while (true) {
         const int client = accept(server, NULL, NULL);
 
+        if (client < 0) {
+            perror("accept failed");
+            continue;
+        }
+        printf("Request accepted!\n");
+
+        read(client, buffer, sizeof(buffer) - 1);
+
+        if (setjmp(jmp_buffer) == 0) {
+            const char *path = resolvePath(buffer);
+            resolve(path);
+        } else {
+            html = "<h1> 404 Not Found! </h1>";
+        }
+
         char response[1024 * 1024];
         snprintf(
             response,
@@ -85,14 +97,6 @@ int main(void) {
             "%s",
             html
         );
-
-        if (client < 0) {
-            perror("accept failed");
-            continue;
-        }
-        printf("Request accepted!\n");
-
-        read(client, buffer, sizeof(buffer) - 1);
 
         char *method2 = resolveMethod(buffer);
         printf("HTTP Method is: %s\n", method2);
