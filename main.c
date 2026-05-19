@@ -20,6 +20,9 @@ void resolve(const char *path) {
     char dest[500] = "../";
     const char *src = path;
     strcat(dest, src);
+    if (setjmp(jmp_buffer) != 0) {
+        strcpy(dest, "../resources/html/notfound.html");
+    }
     if (strcmp(dest, "..//") == 0) {
         strcat(dest, "/resources/html/landing.html");
     }
@@ -83,16 +86,12 @@ int main(void) {
 
         read(client, buffer, sizeof(buffer) - 1);
 
-        if (setjmp(jmp_buffer) == 0) {
-            html = "<h1> The server is working! </h1>";
-        }
-
-        if (setjmp(jmp_buffer) == 0) {
-            const char *path = resolvePath(buffer);
-            resolve(path);
-        } else {
-            html = "<h1> 404 Not Found! </h1>";
-        }
+        // if (setjmp(jmp_buffer) == 0) {
+        const char *path = resolvePath(buffer);
+        resolve(path);
+        // } else {
+        //     html = "<h1> 404 Not Found! </h1>";
+        // }
 
 
         char response[1024 * 1024];
