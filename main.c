@@ -20,7 +20,7 @@ void resolve(const char *path) {
     char dest[500] = "../";
     const char *src = path;
     strcat(dest, src);
-    printf("PATH is: %s", dest);
+    printf("PATH is: %s \n", dest);
     realpath(dest, html_absolute_path);
 
     FILE *fptr = fopen(html_absolute_path, "rb");

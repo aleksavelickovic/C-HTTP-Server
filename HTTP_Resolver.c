@@ -42,5 +42,6 @@ char *resolvePath(const char *request) {
             index++;
         }
     }
+    URI[index] = '\0';
     return URI;
 }
