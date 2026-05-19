@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Orbis — Mission Control</title>
+    <meta name="description" content="Orbis — a single-file space-themed mission control dashboard template."/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg:        #060a10;
+            --surface:   #0c1422;
+            --border:    rgba(255,255,255,0.05);
+            --text:      #d4e4f7;
+            --muted:     #5a7898;
+            --accent:    #00e5ff;
+            --accent-2:  #ff4d6d;
+            --accent-3:  #7fff6f;
+            --radius:    12px;
+            --mono:      'Space Mono', monospace;
+            --display:   'Syne', sans-serif;
+            color-scheme: dark;
+        }
+
+        html.light {
+            --bg:       #eef4fb;
+            --surface:  #ffffff;
+            --border:   rgba(0,0,0,0.06);
+            --text:     #0d1b2e;
+            --muted:    #7a94b0;
+            --accent:   #007aff;
+            --accent-2: #e5002a;
+            --accent-3: #1a9c0a;
+            color-scheme: light;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+
+        body {
+            font-family: var(--mono);
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.5;
+            padding: 28px;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated starfield background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                    radial-gradient(1px 1px at 10% 20%, rgba(0,229,255,0.35) 0%, transparent 100%),
+                    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.2) 0%, transparent 100%),
+                    radial-gradient(1px 1px at 55% 15%, rgba(255,255,255,0.25) 0%, transparent 100%),
+                    radial-gradient(1px 1px at 70% 80%, rgba(0,229,255,0.2) 0%, transparent 100%),
+                    radial-gradient(1px 1px at 85% 35%, rgba(255,255,255,0.18) 0%, transparent 100%),
+                    radial-gradient(1.5px 1.5px at 20% 85%, rgba(255,77,109,0.3) 0%, transparent 100%),
+                    radial-gradient(1px 1px at 48% 48%, rgba(255,255,255,0.12) 0%, transparent 100%),
+                    radial-gradient(1px 1px at 92% 10%, rgba(255,255,255,0.2) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                    radial-gradient(ellipse 800px 600px at 0% 0%, rgba(0,80,120,0.12), transparent),
+                    radial-gradient(ellipse 600px 500px at 100% 100%, rgba(0,229,255,0.05), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1140px;
+            margin: 0 auto;
+        }
+
+        /* ── Header ─────────────────────────────── */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: 1.5px solid var(--accent);
+            display: grid;
+            place-items: center;
+            position: relative;
+            flex-shrink: 0;
+            box-shadow: 0 0 18px rgba(0,229,255,0.2), inset 0 0 10px rgba(0,229,255,0.05);
+            animation: spin-ring 12s linear infinite;
+        }
+
+        @keyframes spin-ring {
+            to { transform: rotate(360deg); }
+        }
+
+        .logo svg {
+            width: 22px;
+            height: 22px;
+            animation: spin-ring 12s linear infinite reverse;
+        }
+
+        .brand-text h1 {
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: 1.2rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .brand-text p {
+            font-size: 0.72rem;
+            color: var(--muted);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        nav.desktop {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        nav.desktop a {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            color: var(--muted);
+            text-decoration: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        nav.desktop a:hover {
+            color: var(--accent);
+            border-color: rgba(0,229,255,0.15);
+            background: rgba(0,229,255,0.04);
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status-dot {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.72rem;
+            color: var(--accent-3);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .status-dot::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-3);
+            box-shadow: 0 0 6px var(--accent-3);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.85); }
+        }
+
+        .btn {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 9px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: rgba(0,229,255,0.08);
+            box-shadow: 0 0 14px rgba(0,229,255,0.15);
+        }
+
+        .btn.solid {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        .btn.solid:hover {
+            box-shadow: 0 0 20px rgba(0,229,255,0.4);
+            background: #33ecff;
+        }
+
+        .btn.danger {
+            border-color: var(--accent-2);
+            color: var(--accent-2);
+        }
+
+        .btn.danger:hover {
+            background: rgba(255,77,109,0.08);
+        }
+
+        .hamburger {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── Panel / card ───────────────────────── */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 22px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0,229,255,0.3), transparent);
+        }
+
+        .panel-label {
+            font-size: 0.68rem;
+            color: var(--muted);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-label::before {
+            content: '//';
+            color: var(--accent);
+            opacity: 0.5;
+        }
+
+        /* ── Hero row ───────────────────────────── */
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr 320px;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .big-stat {
+            padding: 28px 22px;
+        }
+
+        .big-stat .value {
+            font-family: var(--display);
+            font-size: 3.4rem;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--accent);
+            letter-spacing: -0.02em;
+        }
+
+        .big-stat .value.red { color: var(--accent-2); }
+        .big-stat .value.green { color: var(--accent-3); }
+
+        .big-stat .label {
+            font-size: 0.72rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 6px;
+        }
+
+        .big-stat .delta {
+            font-size: 0.8rem;
+            margin-top: 14px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .delta.up { background: rgba(127,255,111,0.08); color: var(--accent-3); }
+        .delta.down { background: rgba(255,77,109,0.08); color: var(--accent-2); }
+
+        /* Orbit visualizer */
+        .orbit-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        .orbit-viz {
+            width: 180px;
+            height: 180px;
+            position: relative;
+        }
+
+        .orbit-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(0,229,255,0.15);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .orbit-ring:nth-child(1) { width: 60px; height: 60px; border-color: rgba(0,229,255,0.4); }
+        .orbit-ring:nth-child(2) { width: 110px; height: 110px; }
+        .orbit-ring:nth-child(3) { width: 160px; height: 160px; }
+
+        .orbit-center {
+            position: absolute;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffcc44, #ff8c00);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(255,180,0,0.6);
+        }
+
+        .orbit-sat {
+            position: absolute;
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            top: 50%; left: 50%;
+            transform-origin: 0 0;
+        }
+
+        .orbit-sat-1 {
+            background: var(--accent);
+            box-shadow: 0 0 8px var(--accent);
+            animation: orbit1 4s linear infinite;
+        }
+
+        .orbit-sat-2 {
+            background: var(--accent-2);
+            box-shadow: 0 0 8px var(--accent-2);
+            animation: orbit2 7s linear infinite;
+            width: 7px; height: 7px;
+        }
+
+        .orbit-sat-3 {
+            background: var(--accent-3);
+            box-shadow: 0 0 8px var(--accent-3);
+            animation: orbit3 11s linear infinite;
+            width: 6px; height: 6px;
+        }
+
+        @keyframes orbit1 {
+            from { transform: rotate(0deg) translateX(46px) translate(-50%,-50%); }
+            to   { transform: rotate(360deg) translateX(46px) translate(-50%,-50%); }
+        }
+        @keyframes orbit2 {
+            from { transform: rotate(60deg) translateX(72px) translate(-50%,-50%); }
+            to   { transform: rotate(420deg) translateX(72px) translate(-50%,-50%); }
+        }
+        @keyframes orbit3 {
+            from { transform: rotate(200deg) translateX(94px) translate(-50%,-50%); }
+            to   { transform: rotate(560deg) translateX(94px) translate(-50%,-50%); }
+        }
+
+        /* ── Mid row: telemetry + log + chart ───── */
+        .mid-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        /* Telemetry list */
+        .telemetry-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .tel-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 9px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.82rem;
+        }
+
+        .tel-row:last-child { border-bottom: none; }
+
+        .tel-key {
+            color: var(--muted);
+            font-size: 0.72rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .tel-val {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .tel-val.accent { color: var(--accent); }
+        .tel-val.danger { color: var(--accent-2); }
+        .tel-val.ok    { color: var(--accent-3); }
+
+        /* Log terminal */
+        .log-terminal {
+            background: #040810;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 0.73rem;
+            line-height: 1.7;
+            height: 200px;
+            overflow-y: auto;
+            color: #5a8a6a;
+            font-family: var(--mono);
+            border: 1px solid rgba(0,229,255,0.05);
+            scrollbar-width: thin;
+            scrollbar-color: var(--muted) transparent;
+        }
+
+        .log-line { display: block; }
+        .log-time { color: var(--muted); margin-right: 8px; }
+        .log-ok   { color: var(--accent-3); }
+        .log-warn { color: #ffcc44; }
+        .log-err  { color: var(--accent-2); }
+        .log-info { color: var(--accent); }
+
+        /* Bar chart */
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            height: 140px;
+            padding-top: 10px;
+        }
+
+        .bar-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            height: 100%;
+            justify-content: flex-end;
+        }
+
+        .bar-fill {
+            width: 100%;
+            border-radius: 4px 4px 0 0;
+            background: linear-gradient(180deg, var(--accent), rgba(0,229,255,0.2));
+            min-height: 4px;
+            transition: height 0.8s ease;
+            position: relative;
+        }
+
+        .bar-fill.alt { background: linear-gradient(180deg, var(--accent-2), rgba(255,77,109,0.2)); }
+
+        .bar-lbl {
+            font-size: 0.62rem;
+            color: var(--muted);
+            text-align: center;
+            letter-spacing: 0.04em;
+        }
+
+        .chart-x-labels {
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        /* ── Bottom row: mission list + contact ── */
+        .bottom-row {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        /* Mission table */
+        .mission-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .mission-table th {
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            padding: 0 12px 10px 0;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .mission-table td {
+            padding: 10px 12px 10px 0;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .mission-table tr:last-child td { border-bottom: none; }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .badge.active  { background: rgba(127,255,111,0.12); color: var(--accent-3); border: 1px solid rgba(127,255,111,0.2); }
+        .badge.standby { background: rgba(0,229,255,0.08);   color: var(--accent);   border: 1px solid rgba(0,229,255,0.15); }
+        .badge.abort   { background: rgba(255,77,109,0.1);   color: var(--accent-2); border: 1px solid rgba(255,77,109,0.2); }
+        .badge.planned { background: rgba(90,120,152,0.1);   color: var(--muted);    border: 1px solid var(--border); }
+
+        /* Contact form */
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+
+        .field label {
+            font-size: 0.66rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .field input,
+        .field textarea,
+        .field select {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: rgba(0,0,0,0.2);
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .field input:focus,
+        .field textarea:focus,
+        .field select:focus {
+            border-color: rgba(0,229,255,0.3);
+            box-shadow: 0 0 0 3px rgba(0,229,255,0.06);
+        }
+
+        .field textarea { min-height: 80px; resize: vertical; }
+
+        .field select option { background: var(--bg); }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        #formMsg {
+            font-size: 0.75rem;
+            color: var(--accent-3);
+            min-height: 20px;
+            margin-top: 6px;
+        }
+
+        /* ── Footer ─────────────────────────────── */
+        footer {
+            padding: 16px 0 4px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: var(--muted);
+        }
+
+        footer span { letter-spacing: 0.06em; }
+
+        .clock {
+            font-family: var(--mono);
+            color: var(--accent);
+            letter-spacing: 0.06em;
+        }
+
+        /* ── Mobile nav menu ────────────────────── */
+        #mobileMenu {
+            display: none;
+            margin-bottom: 18px;
+        }
+
+        #mobileMenu .panel {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 12px;
+        }
+
+        #mobileMenu a {
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            padding: 7px 10px;
+            border-radius: 6px;
+        }
+
+        #mobileMenu a:hover { background: var(--border); color: var(--text); }
+
+        /* ── Responsive ─────────────────────────── */
+        @media (max-width: 1080px) {
+            .hero { grid-template-columns: 1fr 1fr; }
+            .orbit-panel { display: none; }
+        }
+
+        @media (max-width: 860px) {
+            .mid-row { grid-template-columns: 1fr 1fr; }
+            .bottom-row { grid-template-columns: 1fr; }
+            nav.desktop { display: none; }
+            .hamburger { display: flex; }
+        }
+
+        @media (max-width: 680px) {
+            body { padding: 14px; }
+            .hero { grid-template-columns: 1fr; }
+            .mid-row { grid-template-columns: 1fr; }
+            .status-dot { display: none; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 440px) {
+            .big-stat .value { font-size: 2.4rem; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--muted); border-radius: 99px; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ── Header ── -->
+    <header>
+        <a class="brand" href="#" aria-label="Orbis home">
+            <div class="logo" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="4" fill="rgba(0,229,255,0.9)"/>
+                    <ellipse cx="12" cy="12" rx="10" ry="4" stroke="rgba(0,229,255,0.5)" stroke-width="1.2" fill="none" transform="rotate(-30 12 12)"/>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <h1>Orbis</h1>
+                <p>Mission Control v2.4</p>
+            </div>
+        </a>
+
+        <nav class="desktop" aria-label="Main navigation">
+            <a href="#telemetry">Telemetry</a>
+            <a href="#missions">Missions</a>
+            <a href="#log">Event Log</a>
+            <a href="#contact">Comms</a>
+        </nav>
+
+        <div class="header-right">
+            <div class="status-dot">Systems nominal</div>
+
+            <button class="hamburger" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobile()" aria-label="Toggle menu">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+            </button>
+
+            <button class="btn" onclick="toggleTheme()">Theme</button>
+            <button class="btn solid" onclick="simulatePing()">Ping</button>
+        </div>
+    </header>
+
+    <!-- Mobile menu -->
+    <div id="mobileMenu" role="navigation" aria-label="Mobile navigation">
+        <div class="panel">
+            <a href="#telemetry">Telemetry</a>
+            <a href="#missions">Missions</a>
+            <a href="#log">Event Log</a>
+            <a href="#contact">Comms</a>
+        </div>
+    </div>
+
+    <!-- ── Hero KPI row ── -->
+    <section class="hero" aria-label="Key performance indicators">
+        <div class="panel big-stat">
+            <div class="panel-label">Active Satellites</div>
+            <div class="value" id="satCount">247</div>
+            <div class="label">Objects tracked in LEO</div>
+            <span class="delta up" id="satDelta">↑ +3 this week</span>
+        </div>
+
+        <div class="panel big-stat">
+            <div class="panel-label">Signal Uptime</div>
+            <div class="value green">99.7<span style="font-size:1.4rem">%</span></div>
+            <div class="label">30-day rolling average</div>
+            <span class="delta up">↑ +0.2% vs prev. month</span>
+        </div>
+
+        <aside class="panel orbit-panel" aria-label="Orbital simulation" aria-hidden="true">
+            <div class="orbit-viz">
+                <div class="orbit-ring"></div>
+                <div class="orbit-ring"></div>
+                <div class="orbit-ring"></div>
+                <div class="orbit-center"></div>
+                <div class="orbit-sat orbit-sat-1"></div>
+                <div class="orbit-sat orbit-sat-2"></div>
+                <div class="orbit-sat orbit-sat-3"></div>
+            </div>
+        </aside>
+    </section>
+
+    <!-- ── Mid row ── -->
+    <div class="mid-row" id="telemetry">
+
+        <!-- Telemetry panel -->
+        <div class="panel">
+            <div class="panel-label">Live Telemetry</div>
+            <div class="telemetry-list">
+                <div class="tel-row">
+                    <span class="tel-key">Altitude</span>
+                    <span class="tel-val accent" id="tel-alt">408 km</span>
+                </div>
+                <div class="tel-row">
+                    <span class="tel-key">Velocity</span>
+                    <span class="tel-val accent">7.66 km/s</span>
+                </div>
+                <div class="tel-row">
+                    <span class="tel-key">Temperature</span>
+                    <span class="tel-val ok" id="tel-temp">+21 °C</span>
+                </div>
+                <div class="tel-row">
+                    <span class="tel-key">Battery</span>
+                    <span class="tel-val ok" id="tel-bat">84%</span>
+                </div>
+                <div class="tel-row">
+                    <span class="tel-key">Signal Strength</span>
+                    <span class="tel-val accent" id="tel-sig">−62 dBm</span>
+                </div>
+                <div class="tel-row">
+                    <span class="tel-key">Orbit Period</span>
+                    <span class="tel-val">92 min 35 s</span>
+                </div>
+                <div class="tel-row">
+                    <span class="tel-key">Debris Proximity</span>
+                    <span class="tel-val danger">WARNING</span>
+                </div>
+                <div class="tel-row">
+                    <span class="tel-key">Comms Link</span>
+                    <span class="tel-val ok">ACTIVE</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event log -->
+        <div class="panel" id="log">
+            <div class="panel-label">Event Log</div>
+            <div class="log-terminal" id="logTerminal" aria-live="polite">
+                <span class="log-line"><span class="log-time">14:02:07</span><span class="log-ok">[OK]</span>   Uplink established · SAT-12</span>
+                <span class="log-line"><span class="log-time">14:03:45</span><span class="log-info">[INFO]</span> Apogee adjustment burn complete</span>
+                <span class="log-line"><span class="log-time">14:05:11</span><span class="log-warn">[WARN]</span> Solar panel temp 68 °C — nominal limit 72</span>
+                <span class="log-line"><span class="log-time">14:07:00</span><span class="log-ok">[OK]</span>   Payload bay sealed · confirmed</span>
+                <span class="log-line"><span class="log-time">14:08:32</span><span class="log-info">[INFO]</span> Handoff to ground station BETA</span>
+                <span class="log-line"><span class="log-time">14:09:55</span><span class="log-err">[ERR]</span>  Debris proximity alert · vector 047</span>
+                <span class="log-line"><span class="log-time">14:10:03</span><span class="log-warn">[WARN]</span> Initiating evasive maneuver sequence</span>
+                <span class="log-line"><span class="log-time">14:11:18</span><span class="log-ok">[OK]</span>   Maneuver complete · trajectory nominal</span>
+            </div>
+        </div>
+
+        <!-- Bar chart -->
+        <div class="panel">
+            <div class="panel-label">Data Uplink (GB/day)</div>
+            <div class="bar-chart" id="barChart" aria-label="Daily data uplink chart in gigabytes">
+            </div>
+            <div class="chart-x-labels" id="chartLabels" style="padding: 0 2px; font-size:0.62rem; color:var(--muted);"></div>
+        </div>
+
+    </div>
+
+    <!-- ── Bottom row ── -->
+    <div class="bottom-row">
+
+        <!-- Mission table -->
+        <div class="panel" id="missions">
+            <div class="panel-label">Active Missions</div>
+            <table class="mission-table">
+                <thead>
+                <tr>
+                    <th>Mission ID</th>
+                    <th>Name</th>
+                    <th>Orbit</th>
+                    <th>Status</th>
+                    <th>ETA</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td style="color:var(--muted)">ORB-2241</td>
+                    <td>Aurora Watch</td>
+                    <td>LEO</td>
+                    <td><span class="badge active">Active</span></td>
+                    <td>—</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted)">ORB-2198</td>
+                    <td>DeepScan IV</td>
+                    <td>GEO</td>
+                    <td><span class="badge active">Active</span></td>
+                    <td>—</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted)">ORB-2307</td>
+                    <td>Relay-9 Boost</td>
+                    <td>MEO</td>
+                    <td><span class="badge standby">Standby</span></td>
+                    <td>48 h</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted)">ORB-2315</td>
+                    <td>Lunar Gateway Prep</td>
+                    <td>TLI</td>
+                    <td><span class="badge planned">Planned</span></td>
+                    <td>12 d</td>
+                </tr>
+                <tr>
+                    <td style="color:var(--muted)">ORB-2289</td>
+                    <td>Sentinel-X</td>
+                    <td>SSO</td>
+                    <td><span class="badge abort">Aborted</span></td>
+                    <td>—</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Comms form -->
+        <div class="panel" id="contact">
+            <div class="panel-label">Transmit Message</div>
+            <form onsubmit="onSubmit(event)" id="contactForm">
+                <div class="form-row">
+                    <div class="field">
+                        <label for="callsign">Callsign</label>
+                        <input id="callsign" name="callsign" placeholder="ALPHA-7" required/>
+                    </div>
+                    <div class="field">
+                        <label for="channel">Channel</label>
+                        <select id="channel" name="channel">
+                            <option>COMMS-1</option>
+                            <option>COMMS-2</option>
+                            <option>EMERGENCY</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="target">Target Satellite</label>
+                    <input id="target" name="target" placeholder="ORB-2241 or ALL" required/>
+                </div>
+                <div class="field">
+                    <label for="msg">Message payload</label>
+                    <textarea id="msg" name="msg" placeholder="Enter command or message..." required></textarea>
+                </div>
+                <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button type="submit" class="btn solid">Transmit</button>
+                    <button type="button" class="btn" onclick="resetForm()">Clear</button>
+                    <button type="button" class="btn danger" onclick="emergencyAlert()">Emergency</button>
+                </div>
+                <div id="formMsg"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── Footer ── -->
+    <footer>
+        <span>ORBIS Mission Control · v2.4.0 · <span style="color:var(--accent-3)">All systems nominal</span></span>
+        <span class="clock" id="clock" aria-live="polite" aria-label="Mission elapsed time"></span>
+    </footer>
+
+</div>
+
+<script>
+    // ── Theme toggle ─────────────────────────────
+    (function () {
+        const saved = localStorage.getItem('orbis-light');
+        if (saved === '1') document.documentElement.classList.add('light');
+    })();
+
+    function toggleTheme() {
+        const isLight = document.documentElement.classList.toggle('light');
+        localStorage.setItem('orbis-light', isLight ? '1' : '0');
+    }
+
+    // ── Mobile menu ───────────────────────────────
+    function toggleMobile() {
+        const menu = document.getElementById('mobileMenu');
+        const btn = document.querySelector('.hamburger');
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        menu.style.display = expanded ? 'none' : 'block';
+    }
+
+    // ── Mission clock ─────────────────────────────
+    const missionStart = new Date(Date.now() - (4 * 3600 + 23 * 60 + 17) * 1000);
+
+    function updateClock() {
+        const elapsed = Math.floor((Date.now() - missionStart) / 1000);
+        const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+        const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+        const s = String(elapsed % 60).padStart(2, '0');
+        document.getElementById('clock').textContent = `MET +${h}:${m}:${s}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // ── Bar chart ─────────────────────────────────
+    const days = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+    const vals  = [42, 67, 55, 80, 73, 91, 61];
+    const maxVal = Math.max(...vals);
+
+    function buildChart() {
+        const chart  = document.getElementById('barChart');
+        const labels = document.getElementById('chartLabels');
+        chart.innerHTML = '';
+        labels.innerHTML = '';
+
+        vals.forEach((v, i) => {
+            const col  = document.createElement('div');
+            col.className = 'bar-col';
+            const fill = document.createElement('div');
+            fill.className = 'bar-fill' + (i === 5 ? ' alt' : '');
+            fill.style.height = '0%';
+            col.appendChild(fill);
+            chart.appendChild(col);
+
+            const lbl = document.createElement('span');
+            lbl.textContent = days[i];
+            lbl.style.flex = '1';
+            lbl.style.textAlign = 'center';
+            labels.appendChild(lbl);
+
+            // animate in
+            setTimeout(() => {
+                fill.style.height = ((v / maxVal) * 100) + '%';
+            }, 100 + i * 60);
+        });
+    }
+    buildChart();
+
+    // ── Telemetry live updates ────────────────────
+    function randBetween(a, b) {
+        return (Math.random() * (b - a) + a).toFixed(0);
+    }
+
+    setInterval(() => {
+        document.getElementById('tel-alt').textContent = randBetween(405, 412) + ' km';
+        document.getElementById('tel-bat').textContent = randBetween(80, 89) + '%';
+        document.getElementById('tel-sig').textContent = '−' + randBetween(58, 68) + ' dBm';
+        document.getElementById('tel-temp').textContent = '+' + randBetween(18, 25) + ' °C';
+    }, 3000);
+
+    // ── Ping button ───────────────────────────────
+    const logMessages = [
+        'Ping acknowledged · RTT 220 ms',
+        'Uplink verified · packet loss 0%',
+        'Station handoff requested',
+        'Attitude control nominal',
+        'Thermal vent cycle complete',
+        'Data buffer flushed · 4.2 GB',
+        'Gyroscope calibration OK',
+    ];
+    let msgIndex = 0;
+
+    function simulatePing() {
+        const terminal = document.getElementById('logTerminal');
+        const now = new Date();
+        const ts = [now.getHours(), now.getMinutes(), now.getSeconds()]
+            .map(n => String(n).padStart(2, '0')).join(':');
+        const msg = logMessages[msgIndex % logMessages.length];
+        msgIndex++;
+
+        const line = document.createElement('span');
+        line.className = 'log-line';
+        line.innerHTML = `<span class="log-time">${ts}</span><span class="log-info">[PING]</span> ${msg}`;
+        terminal.appendChild(line);
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    // ── Form submit ───────────────────────────────
+    function onSubmit(e) {
+        e.preventDefault();
+        const callsign = document.getElementById('callsign').value.trim();
+        const target   = document.getElementById('target').value.trim();
+        const channel  = document.getElementById('channel').value;
+        const msg      = document.getElementById('msg').value.trim();
+
+        // Log to terminal
+        const terminal = document.getElementById('logTerminal');
+        const now = new Date();
+        const ts = [now.getHours(), now.getMinutes(), now.getSeconds()]
+            .map(n => String(n).padStart(2, '0')).join(':');
+
+        const line = document.createElement('span');
+        line.className = 'log-line';
+        line.innerHTML = `<span class="log-time">${ts}</span><span class="log-ok">[TX]</span>   ${callsign} → ${target} on ${channel}: "${msg.substring(0, 40)}${msg.length > 40 ? '…' : ''}"`;
+        terminal.appendChild(line);
+        terminal.scrollTop = terminal.scrollHeight;
+
+        const formMsg = document.getElementById('formMsg');
+        formMsg.textContent = `✓ Transmitted to ${target} via ${channel}`;
+        formMsg.style.color = 'var(--accent-3)';
+        setTimeout(() => { formMsg.textContent = ''; }, 3500);
+    }
+
+    function resetForm() {
+        document.getElementById('contactForm').reset();
+        document.getElementById('formMsg').textContent = '';
+    }
+
+    function emergencyAlert() {
+        const terminal = document.getElementById('logTerminal');
+        const now = new Date();
+        const ts = [now.getHours(), now.getMinutes(), now.getSeconds()]
+            .map(n => String(n).padStart(2, '0')).join(':');
+        const line = document.createElement('span');
+        line.className = 'log-line';
+        line.innerHTML = `<span class="log-time">${ts}</span><span class="log-err">[!!!]</span>  EMERGENCY BROADCAST — all stations alert`;
+        terminal.appendChild(line);
+        terminal.scrollTop = terminal.scrollHeight;
+
+        const formMsg = document.getElementById('formMsg');
+        formMsg.textContent = '⚠ Emergency signal transmitted on all channels.';
+        formMsg.style.color = 'var(--accent-2)';
+        setTimeout(() => { formMsg.textContent = ''; }, 4000);
+    }
+
+    // ── Keyboard accessibility ─────────────────────
+    (function () {
+        window.addEventListener('keydown', function handler(e) {
+            if (e.key === 'Tab') {
+                document.documentElement.classList.add('user-is-tabbing');
+                window.removeEventListener('keydown', handler);
+            }
+        });
+    })();
+</script>
+</body>
+</html>

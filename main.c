@@ -9,34 +9,45 @@
 #include <time.h>
 #include <stdlib.h> // For realpath()
 #include <limits.h> // For PATH_MAX
+#include <setjmp.h>
+
 #include "HTTP_Resolver.h"
+jmp_buf jmp_buffer;
+char *html = NULL;
 
-int main(void) {
-    struct sockaddr_in server_addr;
-    char buffer[1024];
-    srand(time(NULL));
-
+void resolve() {
     char html_absolute_path[PATH_MAX];
-    realpath("../resources/html/index.html", html_absolute_path);
+    realpath("../resources/html/sample_2.html", html_absolute_path);
 
-    const FILE *fptr = fopen(html_absolute_path, "rb");
+    FILE *fptr = fopen(html_absolute_path, "rb");
     if (fptr == NULL) {
         printf("Error! Could not open file!\n");
+        longjmp(jmp_buffer, 1);
     }
-
     fseek(fptr, 0, SEEK_END);
-    const long size = ftell(fptr);
+    long size = ftell(fptr);
     rewind(fptr);
 
-    char *html = malloc(size + 1);
+    html = malloc(size + 1);
 
     if (html == NULL) {
         printf("Memory allocation failed!\n");
         fclose(fptr);
-        return 1;
     }
 
     fread(html, 1, size, fptr);
+}
+
+int main(void) {
+    struct sockaddr_in server_addr;
+    char buffer[1024];
+
+
+    if (setjmp(jmp_buffer) == 0) {
+        resolve();
+    } else {
+        html = "<h1> 404 Not Found! </h1>";
+    }
 
 
     int server = socket(AF_INET, SOCK_STREAM, 0);
