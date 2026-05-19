@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "external/uthash/src/uthash.h"
+#include "HTTP_Header_Manager.h"
+
 char *resolveMethod(const char *request) {
     char *method = malloc(10);
     method[9] = '\0';
@@ -44,4 +47,27 @@ char *resolvePath(const char *request) {
     }
     URI[index] = '\0';
     return URI;
+}
+
+struct HTTP_Header *resolveHeaders(const char *request) {
+    char *line = strtok(request, "\r\n");
+    line = strtok(NULL, "\r\n");
+    line = strtok(NULL, "\r\n");
+    struct HTTP_Header *headers = NULL;
+
+    while (line != NULL) {
+        if (line == NULL || strlen(line) == 0) break;
+
+        printf("HEADER: %s\n", line);
+
+        const char *token = strtok(line, ":");
+        while (token != NULL) {
+            struct HTTP_Header h1 = {token[0], token[1]};
+            add_header(&h1);
+        }
+
+        line = strtok(NULL, "\r\n");
+    }
+
+    return headers;
 }
