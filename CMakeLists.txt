@@ -5,4 +5,6 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(HTTP_Server main.c
         HTTP_Resolver.h
-        HTTP_Resolver.c)
+        HTTP_Resolver.c
+        HTTP_Header_Manager.c
+        HTTP_Header_Manager.h)
