@@ -16,7 +16,10 @@ int main(void) {
     char buffer[1024];
     srand(time(NULL));
 
-    const FILE *fptr = fopen("/home/aleksa/Fakultet/Projekti/HTTP Server/resources/html/index.html", "rb");
+    char html_absolute_path[PATH_MAX];
+    realpath("../resources/html/index.html", html_absolute_path);
+
+    const FILE *fptr = fopen(html_absolute_path, "rb");
     if (fptr == NULL) {
         printf("Error! Could not open file!\n");
     }
