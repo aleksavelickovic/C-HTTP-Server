@@ -26,7 +26,7 @@ char *resolvePath(const char *request) {
     char *path = malloc(len + 1);
     memcpy(path, request, len);
     path[len] = '\0';
-    char URI[5000000] = " ";
+    char *URI = malloc(len + 1);
     int counter = 0;
     int index = 0;
     for (int i = 0; i < strlen(request); i++) {
