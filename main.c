@@ -11,7 +11,9 @@
 #include <limits.h> // For PATH_MAX
 #include <setjmp.h>
 
+#include "HTTP_Header_Manager.h"
 #include "HTTP_Resolver.h"
+#include "external/uthash/src/uthash.h"
 jmp_buf jmp_buffer;
 char *html = NULL;
 
@@ -92,6 +94,14 @@ int main(void) {
         // } else {
         //     html = "<h1> 404 Not Found! </h1>";
         // }
+
+        struct HTTP_Header *headers = resolveHeaders(buffer);
+
+        struct HTTP_Header *current, *tmp;
+
+        HASH_ITER(hh, headers, current, tmp) {
+            printf("%s: %s\n", current->key, current->value);
+        }
 
 
         char response[1024 * 1024];

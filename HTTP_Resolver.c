@@ -50,21 +50,37 @@ char *resolvePath(const char *request) {
 }
 
 struct HTTP_Header *resolveHeaders(const char *request) {
-    char *line = strtok(request, "\r\n");
-    line = strtok(NULL, "\r\n");
-    line = strtok(NULL, "\r\n");
     struct HTTP_Header *headers = NULL;
 
+    char *line = strtok(request, "\r\n");
+    if (!line) return NULL;
+
+    line = strtok(NULL, "\r\n");
+
     while (line != NULL) {
-        if (line == NULL || strlen(line) == 0) break;
+        if (strlen(line) == 0) break;
 
         printf("HEADER: %s\n", line);
 
-        const char *token = strtok(line, ":");
-        while (token != NULL) {
-            struct HTTP_Header h1 = {token[0], token[1]};
-            add_header(&h1);
+        char *colon = strchr(line, ':');
+        if (!colon) {
+            line = strtok(NULL, "\r\n");
+            continue;
         }
+
+        struct HTTP_Header *h1 = malloc(sizeof(struct HTTP_Header));
+
+        size_t key_len = colon - line;
+        strncpy(h1->key, line, key_len);
+        h1->key[key_len] = '\0';
+
+        char *value_start = colon + 1;
+        while (*value_start == ' ') value_start++;
+
+        strncpy(h1->value, value_start, sizeof(h1->value) - 1);
+        h1->value[sizeof(h1->value) - 1] = '\0';
+
+        add_header(h1);
 
         line = strtok(NULL, "\r\n");
     }
