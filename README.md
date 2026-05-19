@@ -11,5 +11,5 @@ A tiny single\-threaded HTTP server written in C. It listens on port `8081` to i
 
 ## HTTP Standards Supported
 
-\- HTTP 0.9
+\- HTTP 1.0
 
