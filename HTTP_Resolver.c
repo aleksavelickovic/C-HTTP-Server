@@ -21,8 +21,8 @@ char *resolveMethod(const char *request) {
     return method;
 }
 
-// char *resolvePath(const char *data) {
-//     char *path = malloc(sizeof(data));
-//     path[sizeof(data) - 1] = '\0';
-//     return NULL;
-// }
+char *resolvePath(const char *request) {
+    char *path = malloc(sizeof(request) + 1);
+    path[sizeof(request) - 1] = '\0';
+    return NULL;
+}
