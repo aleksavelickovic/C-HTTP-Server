@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>C HTTP Server</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            padding: 40px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #22c55e;
+        }
+
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 18px;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        a:hover {
+            background: #2563eb;
+            transform: scale(1.05);
+        }
+
+        .status {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1>Server is working!</h1>
+    <p>Welcome to your C HTTP server landing page 🚀</p>
+
+    <a href="https://github.com/aleksavelickovic/C-HTTP-Server" target="_blank">
+        GitHub Repository
+    </a>
+
+    <div class="status" id="status"></div>
+</div>
+
+<script>
+    // simple dynamic status
+    document.getElementById("status").innerText =
+        "Loaded at: " + new Date().toLocaleString();
+</script>
+</body>
+</html>
