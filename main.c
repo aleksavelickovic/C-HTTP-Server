@@ -16,13 +16,24 @@ int main(void) {
     char buffer[1024];
     srand(time(NULL));
 
-    char *template =
-            "HTTP/1.1 200 OK\n"
-            "Content-Type: text/html\n"
-            "\n"
-            "<html>"
-            "<h1>Hello, World! %d</h1>"
-            "</html>";
+    const FILE *fptr = fopen("/home/aleksa/Fakultet/Projekti/HTTP Server/resources/html/index.html", "rb");
+    if (fptr == NULL) {
+        printf("Error! Could not open file!\n");
+    }
+
+    fseek(fptr, 0, SEEK_END);
+    const long size = ftell(fptr);
+    rewind(fptr);
+
+    char *html = malloc(size + 1);
+
+    if (html == NULL) {
+        printf("Memory allocation failed!\n");
+        fclose(fptr);
+        return 1;
+    }
+
+    fread(html, 1, size, fptr);
 
 
     int server = socket(AF_INET, SOCK_STREAM, 0);
@@ -50,9 +61,16 @@ int main(void) {
     while (true) {
         const int client = accept(server, NULL, NULL);
 
-        int random = rand();
-        char response[2048];
-        snprintf(response, sizeof(response), template, random);
+        char response[1024 * 1024];
+        snprintf(
+            response,
+            sizeof(response),
+            "HTTP/1.1 200 OK\r\n"
+            "Content-Type: text/html\r\n"
+            "\r\n"
+            "%s",
+            html
+        );
 
         if (client < 0) {
             perror("accept failed");
