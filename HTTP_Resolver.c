@@ -52,7 +52,7 @@ char *resolvePath(const char *request) {
 struct HTTP_Header *resolveHeaders(const char *request) {
     char *line = strtok(request, "\r\n");
     line = strtok(NULL, "\r\n");
-    line = strtok(NULL, "\r\n");
+    // line = strtok(NULL, "\r\n");
     struct HTTP_Header *headers = NULL;
 
     while (line != NULL) {
