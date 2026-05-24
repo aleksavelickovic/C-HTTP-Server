@@ -49,6 +49,12 @@ char *resolvePath(const char *request) {
     return URI;
 }
 
+void *printHeaders(const char *request) {
+    printf("Print Headers Pozvana!\n");
+    return 0;
+}
+
+// WIP
 struct HTTP_Header *resolveHeaders(const char *request) {
     char *line = strtok(request, "\r\n");
     line = strtok(NULL, "\r\n");

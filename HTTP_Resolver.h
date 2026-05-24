@@ -11,6 +11,8 @@ char *resolveMethod(const char *request);
 
 char *resolvePath(const char *request);
 
+void *printHeaders(const char *request);
+
 struct HTTP_Header *resolveHeaders(const char *request);
 
 #endif //HTTP_SERVER_METHODRESOLVER_H

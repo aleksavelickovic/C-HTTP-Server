@@ -93,6 +93,7 @@ int main(void) {
         //     html = "<h1> 404 Not Found! </h1>";
         // }
 
+        printHeaders(buffer);
 
         char response[1024 * 1024];
         snprintf(
