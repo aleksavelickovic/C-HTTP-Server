@@ -51,25 +51,16 @@ char *resolvePath(const char *request) {
 
 void *printHeaders(const char *request) {
     printf("Print Headers Pozvana!\n");
-    char buffer[1024 * 1024];
-    int offset;
-    int counter = 0;
+    char *line = strtok(request, "\r\n");
+    line = strtok(NULL, "\r\n");
 
-    while (sscanf(request, "%99[^\r\n]%n", buffer, &offset) == 1) {
-        if (counter > 1) {
-            printf("%s\n", buffer);
-            request += offset;
-            // if (strcmp(request[0], "\\") == 0) {
-            //     request++;
-            // }
-            if (request[0] == '\\') {
-                request++;
-            }
-            if (strcmp(request, "\r\n\r\n") == 0) { // non-working!
-                return NULL;
-            }
+    while (line != NULL) {
+        if (strcmp(line, "\r\n\r\n") != 0) {
+            printf("%s\n", line);
+            line = strtok(NULL, "\r\n");
+        } else {
+            break;
         }
-        counter++;
     }
     return NULL;
 }
