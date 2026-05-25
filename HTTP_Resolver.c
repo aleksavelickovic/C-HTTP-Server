@@ -50,12 +50,12 @@ char *resolvePath(const char *request) {
 }
 
 void *printHeaders(const char *request) {
-    printf("Print Headers Pozvana!\n");
+    printf("printHeaders called!\n");
     char *line = strtok(request, "\r\n");
     line = strtok(NULL, "\r\n");
 
     while (line != NULL) {
-        if (strcmp(line, "\r\n\r\n") != 0) {
+        if (strchr(line, ':') != NULL) {
             printf("%s\n", line);
             line = strtok(NULL, "\r\n");
         } else {
